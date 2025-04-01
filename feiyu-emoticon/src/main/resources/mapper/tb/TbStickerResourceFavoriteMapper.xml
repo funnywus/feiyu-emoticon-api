@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.emoticon.tb.mapper.TbStickerResourceFavoriteMapper">
+
+    <resultMap type="TbStickerResourceFavorite" id="TbStickerResourceFavoriteResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="stickerResourceId"    column="sticker_resource_id"    />
+        <result property="stickerId"    column="sticker_id"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="TbStickerResource" id="TbStickerResourceResult">
+        <result property="id"    column="id"    />
+        <result property="stickerId"    column="sticker_id"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="name"    column="name"    />
+        <result property="imageUrl"    column="image_url"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="status"    column="status"    />
+        <result property="likes"    column="likes"    />
+        <result property="downloads"    column="downloads"    />
+        <result property="views"    column="views"    />
+        <result property="shareCount"    column="share_count"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTbStickerResourceFavoriteVo">
+        select id, user_id, sticker_resource_id, sticker_id, category_id, create_time, update_time from tb_sticker_resource_favorite
+    </sql>
+
+    <select id="selectTbStickerResourceFavoriteList" parameterType="TbStickerResourceFavorite" resultMap="TbStickerResourceFavoriteResult">
+        <include refid="selectTbStickerResourceFavoriteVo"/>
+        <where>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="stickerResourceId != null  and stickerResourceId != ''"> and sticker_resource_id = #{stickerResourceId}</if>
+            <if test="stickerId != null  and stickerId != ''"> and sticker_id = #{stickerId}</if>
+            <if test="categoryId != null  and categoryId != ''"> and category_id = #{categoryId}</if>
+        </where>
+    </select>
+
+    <select id="selectTbStickerResourceFavoriteById" parameterType="String" resultMap="TbStickerResourceFavoriteResult">
+        <include refid="selectTbStickerResourceFavoriteVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTbStickerResourceFavorite" parameterType="TbStickerResourceFavorite">
+        insert into tb_sticker_resource_favorite
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null and userId != ''">user_id,</if>
+            <if test="stickerResourceId != null and stickerResourceId != ''">sticker_resource_id,</if>
+            <if test="stickerId != null and stickerId != ''">sticker_id,</if>
+            <if test="categoryId != null and categoryId != ''">category_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null and userId != ''">#{userId},</if>
+            <if test="stickerResourceId != null and stickerResourceId != ''">#{stickerResourceId},</if>
+            <if test="stickerId != null and stickerId != ''">#{stickerId},</if>
+            <if test="categoryId != null and categoryId != ''">#{categoryId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbStickerResourceFavorite" parameterType="TbStickerResourceFavorite">
+        update tb_sticker_resource_favorite
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id = #{userId},</if>
+            <if test="stickerResourceId != null and stickerResourceId != ''">sticker_resource_id = #{stickerResourceId},</if>
+            <if test="stickerId != null and stickerId != ''">sticker_id = #{stickerId},</if>
+            <if test="categoryId != null and categoryId != ''">category_id = #{categoryId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbStickerResourceFavoriteById" parameterType="String">
+        delete from tb_sticker_resource_favorite where id = #{id}
+    </delete>
+
+    <delete id="deleteTbStickerResourceFavoriteByIds" parameterType="String">
+        delete from tb_sticker_resource_favorite where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByUserIdAndResourceId" resultType="TbStickerResourceFavorite">
+        select *
+        from tb_sticker_resource_favorite
+        where user_id = #{userId} and sticker_resource_id = #{stickerResourceId}
+        limit 1
+    </select>
+
+    <select id="selectFavoriteResourceList" parameterType="TbStickerResource" resultMap="TbStickerResourceResult">
+        SELECT
+            r.id,
+            r.name,
+            s.category_id,
+            r.image_url,
+            r.sticker_id
+        FROM
+            tb_sticker_resource r
+            INNER JOIN tb_sticker_resource_favorite f ON r.id = f.sticker_resource_id
+            INNER JOIN tb_sticker s ON r.sticker_id = s.id
+        <where>
+             f.user_id = #{userId}
+            AND r.status = 1
+        </where>
+        ORDER BY f.create_time DESC
+    </select>
+
+</mapper>

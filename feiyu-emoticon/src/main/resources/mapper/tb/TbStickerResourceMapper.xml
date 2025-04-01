@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.emoticon.tb.mapper.TbStickerResourceMapper">
+
+    <resultMap type="TbStickerResource" id="TbStickerResourceResult">
+        <result property="id"    column="id"    />
+        <result property="stickerId"    column="sticker_id"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="name"    column="name"    />
+        <result property="imageUrl"    column="image_url"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="status"    column="status"    />
+        <result property="likes"    column="likes"    />
+        <result property="downloads"    column="downloads"    />
+        <result property="views"    column="views"    />
+        <result property="shareCount"    column="share_count"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTbStickerResourceVo">
+        select id, sticker_id, category_id, name, image_url, file_type, status, likes, downloads, views, share_count, sort_order, create_time, update_time from tb_sticker_resource
+    </sql>
+
+    <sql id="selectAppTbStickerResourceVo">
+        select sr.id, s.id as sticker_id, c.id as category_id, sr.name, sr.image_url, sr.file_type, sr.status, sr.likes, sr.downloads, sr.views, sr.share_count, sr.sort_order, sr.create_time, sr.update_time
+        from tb_sticker_resource sr
+        left join  tb_sticker s on sr .sticker_id = s.id
+        left join  tb_category c on s.category_id = c.id
+    </sql>
+
+    <select id="selectAppTbStickerResourceList" parameterType="TbStickerResource" resultMap="TbStickerResourceResult">
+        <include refid="selectAppTbStickerResourceVo"/>
+        <where>
+            <if test="stickerId != null  and stickerId != ''"> and sr.sticker_id = #{stickerId}</if>
+            <if test="categoryId != null  and categoryId != ''"> and sr.category_id = #{categoryId}</if>
+            <if test="name != null  and name != ''"> and concat(IFNULL(c.name,''), IFNULL(s.name, ''), IFNULL(sr.name,'')) like concat('%', #{name}, '%')</if>
+            <if test="imageUrl != null  and imageUrl != ''"> and sr.image_url = #{imageUrl}</if>
+            <if test="status != null "> and sr.status = #{status}</if>
+        </where>
+        order by sr.downloads desc
+    </select>
+
+    <select id="selectTbStickerResourceList" parameterType="TbStickerResource" resultMap="TbStickerResourceResult">
+        <include refid="selectAppTbStickerResourceVo"/>
+        <where>
+            <if test="stickerId != null  and stickerId != ''"> and sr.sticker_id = #{stickerId}</if>
+            <if test="categoryId != null  and categoryId != ''"> and sr.category_id = #{categoryId}</if>
+            <if test="name != null  and name != ''"> and concat(IFNULL(sr.name,'')) like concat('%', #{name}, '%')</if>
+            <if test="imageUrl != null  and imageUrl != ''"> and sr.image_url = #{imageUrl}</if>
+            <if test="status != null "> and sr.status = #{status}</if>
+        </where>
+        order by sr.create_time asc
+    </select>
+
+    <select id="selectTbStickerResourceById" parameterType="String" resultMap="TbStickerResourceResult">
+        <include refid="selectTbStickerResourceVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectTbStickerResourceListByStickerId" parameterType="String" resultMap="TbStickerResourceResult">
+        select id, sticker_id, category_id, name, image_url, file_type, status, likes, downloads, views, share_count, sort_order, create_time, update_time from tb_sticker_resource
+        <where>
+            and sticker_id = #{stickerId}
+        </where>
+        order by sort_order ASC, views desc
+    </select>
+
+    <insert id="insertTbStickerResource" parameterType="TbStickerResource">
+        insert into tb_sticker_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">id,</if>
+            <if test="stickerId != null and stickerId != ''">sticker_id,</if>
+            <if test="categoryId != null and categoryId != ''">category_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url,</if>
+            <if test="fileType != null">file_type,</if>
+            <if test="status != null">status,</if>
+            <if test="likes != null">likes,</if>
+            <if test="downloads != null">downloads,</if>
+            <if test="views != null">views,</if>
+            <if test="shareCount != null">share_count,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">#{id},</if>
+            <if test="categoryId != null and categoryId != ''">#{categoryId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="imageUrl != null and imageUrl != ''">#{imageUrl},</if>
+            <if test="fileType != null">#{fileType},</if>
+            <if test="status != null">#{status},</if>
+            <if test="likes != null">#{likes},</if>
+            <if test="downloads != null">#{downloads},</if>
+            <if test="views != null">#{views},</if>
+            <if test="shareCount != null">#{shareCount},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbStickerResource" parameterType="TbStickerResource">
+        update tb_sticker_resource
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stickerId != null and stickerId != ''">sticker_id = #{stickerId},</if>
+            <if test="categoryId != null and categoryId != ''">category_id = #{categoryId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url = #{imageUrl},</if>
+            <if test="fileType != null">file_type = #{fileType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="likes != null">likes = #{likes},</if>
+            <if test="downloads != null">downloads = #{downloads},</if>
+            <if test="views != null">views = #{views},</if>
+            <if test="shareCount != null">share_count = #{shareCount},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbStickerResourceById" parameterType="String">
+        delete from tb_sticker_resource where id = #{id}
+    </delete>
+
+    <delete id="deleteTbStickerResourceByIds" parameterType="String">
+        delete from tb_sticker_resource where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectBatchByStickerIds" resultMap="TbStickerResourceResult">
+        select *
+        from tb_sticker_resource
+        where sticker_id in
+        <foreach collection="list" item="stickerId" open="(" separator="," close=")">
+            #{stickerId}
+        </foreach>
+    </select>
+    <select id="selectBatchByStickerIdsWithLimit" resultMap="TbStickerResourceResult">
+        SELECT r.*
+        FROM tb_sticker_resource r
+        WHERE r.status = 1
+        AND r.sticker_id IN
+        <foreach collection="list" item="stickerId" open="(" separator="," close=")">
+            #{stickerId}
+        </foreach>
+        AND (
+            SELECT COUNT(1)
+            FROM tb_sticker_resource t
+            WHERE t.sticker_id = r.sticker_id
+            AND (
+                t.sort_order &lt; r.sort_order
+                OR (t.sort_order = r.sort_order AND t.views &gt; r.views)
+                OR (t.sort_order = r.sort_order AND t.views = r.views AND t.id &lt;= r.id)
+            )
+        ) &lt;= 4
+        ORDER BY r.sticker_id, r.sort_order ASC, r.views DESC
+    </select>
+
+    <select id="selectByStickerIdWithLimit" resultMap="TbStickerResourceResult">
+        select *
+        from tb_sticker_resource
+        where sticker_id = #{stickerId}
+        limit #{limit}
+    </select>
+
+    <update id="increaseShareCount" parameterType="String">
+        update tb_sticker_resource
+        set share_count = share_count + 1
+        where id = #{id}
+        for update
+    </update>
+
+    <update id="increaseDownloadCount" parameterType="String">
+        update tb_sticker_resource
+        set downloads = downloads + 1
+        where id = #{id}
+        for update
+    </update>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into tb_sticker_resource (
+            id, sticker_id, category_id, name, image_url, file_type, status,
+            likes, downloads, views, share_count, sort_order, create_time, update_time
+        ) values
+        <foreach collection="list" item="item" separator=",">
+            (
+                #{item.id}, #{item.stickerId}, #{item.categoryId}, #{item.name},
+                #{item.imageUrl}, #{item.fileType}, #{item.status},
+                #{item.likes}, #{item.downloads}, #{item.views},
+                #{item.shareCount}, #{item.sortOrder}, #{item.createTime}, #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectTbStickerResourceByIds" resultMap="TbStickerResourceResult">
+        <include refid="selectTbStickerResourceVo"/>
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

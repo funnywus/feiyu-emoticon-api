@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.emoticon.tb.mapper.TbConfigMapper">
+
+    <resultMap type="TbConfig" id="TbConfigResult">
+        <result property="id"    column="id"    />
+        <result property="appName"    column="app_name"    />
+        <result property="shareTitle"    column="share_title"    />
+        <result property="shareImage"    column="share_image"    />
+        <result property="shareDescription"    column="share_description"    />
+        <result property="shareStatus"    column="share_status"    />
+        <result property="aboutType"    column="about_type"    />
+        <result property="aboutContent"    column="about_content"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="hiddenData"    column="hidden_data"    />
+    </resultMap>
+
+    <sql id="selectTbConfigVo">
+        select id, app_name, share_title, share_image, share_description, share_status, about_type, about_content, create_time, update_time, hidden_data from tb_config
+    </sql>
+
+    <select id="selectTbConfigList" parameterType="TbConfig" resultMap="TbConfigResult">
+        <include refid="selectTbConfigVo"/>
+        <where>
+            <if test="appName != null  and appName != ''"> and app_name like concat('%', #{appName}, '%')</if>
+            <if test="shareTitle != null  and shareTitle != ''"> and share_title = #{shareTitle}</if>
+            <if test="shareImage != null  and shareImage != ''"> and share_image = #{shareImage}</if>
+            <if test="shareDescription != null  and shareDescription != ''"> and share_description = #{shareDescription}</if>
+            <if test="shareStatus != null "> and share_status = #{shareStatus}</if>
+            <if test="aboutType != null  and aboutType != ''"> and about_type = #{aboutType}</if>
+            <if test="aboutContent != null  and aboutContent != ''"> and about_content = #{aboutContent}</if>
+            <if test="hiddenData != null  and hiddenData != ''"> and hidden_data = #{hiddenData}</if>
+        </where>
+    </select>
+
+    <select id="selectTbConfigById" parameterType="Long" resultMap="TbConfigResult">
+        <include refid="selectTbConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTbConfig" parameterType="TbConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appName != null and appName != ''">app_name,</if>
+            <if test="shareTitle != null">share_title,</if>
+            <if test="shareImage != null">share_image,</if>
+            <if test="shareDescription != null">share_description,</if>
+            <if test="shareStatus != null">share_status,</if>
+            <if test="aboutType != null and aboutType != ''">about_type,</if>
+            <if test="aboutContent != null">about_content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="hiddenData != null">hidden_data,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appName != null and appName != ''">#{appName},</if>
+            <if test="shareTitle != null">#{shareTitle},</if>
+            <if test="shareImage != null">#{shareImage},</if>
+            <if test="shareDescription != null">#{shareDescription},</if>
+            <if test="shareStatus != null">#{shareStatus},</if>
+            <if test="aboutType != null and aboutType != ''">#{aboutType},</if>
+            <if test="aboutContent != null">#{aboutContent},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="hiddenData != null">#{hiddenData},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbConfig" parameterType="TbConfig">
+        update tb_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appName != null and appName != ''">app_name = #{appName},</if>
+            <if test="shareTitle != null">share_title = #{shareTitle},</if>
+            <if test="shareImage != null">share_image = #{shareImage},</if>
+            <if test="shareDescription != null">share_description = #{shareDescription},</if>
+            <if test="shareStatus != null">share_status = #{shareStatus},</if>
+            <if test="aboutType != null and aboutType != ''">about_type = #{aboutType},</if>
+            <if test="aboutContent != null">about_content = #{aboutContent},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="hiddenData != null">hidden_data = #{hiddenData},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbConfigById" parameterType="Long">
+        delete from tb_config where id = #{id}
+    </delete>
+
+    <delete id="deleteTbConfigByIds" parameterType="String">
+        delete from tb_config where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

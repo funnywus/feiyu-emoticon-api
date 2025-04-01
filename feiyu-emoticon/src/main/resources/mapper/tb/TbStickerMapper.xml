@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.emoticon.tb.mapper.TbStickerMapper">
+
+    <resultMap type="TbSticker" id="TbStickerResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="name"    column="name"    />
+        <result property="description"    column="description"    />
+        <result property="images"    column="images"    />
+        <result property="status"    column="status"    />
+        <result property="tags"    column="tags"    />
+        <result property="likes"    column="likes"    />
+        <result property="downloads"    column="downloads"    />
+        <result property="views"    column="views"    />
+        <result property="shareCount"    column="share_count"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTbStickerVo">
+        select id, user_id, category_id, name, description, images, status, tags, likes, downloads, views, share_count, sort_order, create_time, update_time from tb_sticker
+    </sql>
+
+    <select id="selectTbStickerList" parameterType="TbSticker" resultMap="TbStickerResult">
+        <include refid="selectTbStickerVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="categoryId != null "> and category_id = #{categoryId}</if>
+            <if test="name != null and name != ''">
+                and (
+                    name like concat('%', #{name}, '%')
+                    or tags like concat('%', #{name}, '%')
+                    or description like concat('%', #{name}, '%')
+                )
+            </if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="images != null  and images != ''"> and images = #{images}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="tags != null  and tags != ''"> and tags = #{tags}</if>
+            <if test="likes != null "> and likes = #{likes}</if>
+            <if test="downloads != null "> and downloads = #{downloads}</if>
+            <if test="views != null "> and views = #{views}</if>
+            <if test="shareCount != null "> and share_count = #{shareCount}</if>
+            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+        </where>
+        order by sort_order asc, views desc
+
+    </select>
+
+    <select id="selectTbStickerById" parameterType="String" resultMap="TbStickerResult">
+        <include refid="selectTbStickerVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectAppTbStickerList" parameterType="TbSticker" resultMap="TbStickerResult">
+        SELECT
+            id,
+            user_id,
+            category_id,
+            name,
+            description,
+            status,
+            tags,
+            likes,
+            downloads,
+            views,
+            sort_order,
+            create_time,
+            update_time,
+            share_count
+        FROM tb_sticker
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="categoryId != null "> and category_id = #{categoryId}</if>
+            <if test="name != null and name != ''">
+                and (
+                    name like concat('%', #{name}, '%')
+                    or tags like concat('%', #{name}, '%')
+                    or description like concat('%', #{name}, '%')
+                )
+            </if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="images != null  and images != ''"> and images = #{images}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="tags != null  and tags != ''"> and tags = #{tags}</if>
+            <if test="likes != null "> and likes = #{likes}</if>
+            <if test="downloads != null "> and downloads = #{downloads}</if>
+            <if test="views != null "> and views = #{views}</if>
+            <if test="shareCount != null "> and share_count = #{shareCount}</if>
+            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+        </where>
+        order by sort_order asc
+        <if test="subSortOrder != null">
+            <choose>
+                <when test="subSortOrder == 1">
+                    , create_time desc
+                </when>
+                <when test="subSortOrder == 2">
+                    , views desc
+                </when>
+            </choose>
+        </if>
+        <if test="subSortOrder == null">
+             , views desc
+        </if>
+    </select>
+
+    <insert id="insertTbSticker" parameterType="TbSticker">
+        insert into tb_sticker
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="description != null">description,</if>
+            <if test="images != null and images != ''">images,</if>
+            <if test="status != null">status,</if>
+            <if test="tags != null">tags,</if>
+            <if test="likes != null">likes,</if>
+            <if test="downloads != null">downloads,</if>
+            <if test="views != null">views,</if>
+            <if test="shareCount != null">share_count,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="description != null">#{description},</if>
+            <if test="images != null and images != ''">#{images},</if>
+            <if test="status != null">#{status},</if>
+            <if test="tags != null">#{tags},</if>
+            <if test="likes != null">#{likes},</if>
+            <if test="downloads != null">#{downloads},</if>
+            <if test="views != null">#{views},</if>
+            <if test="shareCount != null">#{shareCount},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbSticker" parameterType="TbSticker">
+        update tb_sticker
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="images != null and images != ''">images = #{images},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="tags != null">tags = #{tags},</if>
+            <if test="likes != null">likes = #{likes},</if>
+            <if test="downloads != null">downloads = #{downloads},</if>
+            <if test="views != null">views = #{views},</if>
+            <if test="shareCount != null">share_count = #{shareCount},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbStickerById" parameterType="String">
+        delete from tb_sticker where id = #{id}
+    </delete>
+
+    <delete id="deleteTbStickerByIds" parameterType="String">
+        delete from tb_sticker where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

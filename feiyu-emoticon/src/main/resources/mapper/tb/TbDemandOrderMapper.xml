@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.emoticon.tb.mapper.TbDemandOrderMapper">
+
+    <resultMap type="TbDemandOrder" id="TbDemandOrderResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="receiverUserId"    column="receiver_user_id"    />
+        <result property="type"    column="type"    />
+        <result property="receiverName"    column="receiver_name"    />
+        <result property="receiverPhone"    column="receiver_phone"    />
+        <result property="receiverAddress"    column="receiver_address"    />
+        <result property="money"    column="money"    />
+        <result property="content"    column="content"    />
+        <result property="status"    column="status"    />
+        <result property="evaluate"    column="evaluate"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="payTime"    column="pay_time"    />
+        <result property="receiverUserPhone"    column="receiver_user_phone"    />
+        <result property="receiverUserName"    column="receiver_user_name"    />
+    </resultMap>
+
+    <sql id="selectTbDemandOrderVo">
+        select id, user_id, receiver_user_id, type, receiver_name, receiver_phone, receiver_address, money, content, status, evaluate, del_flag, create_by, create_time, update_by, update_time, remark, pay_time, receiver_user_phone, receiver_user_name from tb_demand_order
+    </sql>
+
+    <select id="selectTbDemandOrderList" parameterType="TbDemandOrder" resultMap="TbDemandOrderResult">
+        <include refid="selectTbDemandOrderVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="receiverName != null  and receiverName != ''"> and receiver_name like concat('%', #{receiverName}, '%')</if>
+            <if test="receiverPhone != null  and receiverPhone != ''"> and receiver_phone = #{receiverPhone}</if>
+            <if test="receiverAddress != null  and receiverAddress != ''"> and receiver_address = #{receiverAddress}</if>
+            <if test="money != null "> and money = #{money}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="evaluate != null  and evaluate != ''"> and evaluate = #{evaluate}</if>
+            <if test="payTime != null "> and pay_time = #{payTime}</if>
+            <if test="receiverUserId != null"> and receiver_user_id = #{receiverUserId}</if>
+        </where>
+    </select>
+
+    <select id="selectTbDemandOrderById" parameterType="String" resultMap="TbDemandOrderResult">
+        <include refid="selectTbDemandOrderVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTbDemandOrder" parameterType="TbDemandOrder">
+        insert into tb_demand_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="receiverUserId != null">receiver_user_id,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="receiverName != null">receiver_name,</if>
+            <if test="receiverPhone != null">receiver_phone,</if>
+            <if test="receiverAddress != null">receiver_address,</if>
+            <if test="money != null">money,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="evaluate != null">evaluate,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="receiverUserPhone != null">receiver_user_phone,</if>
+            <if test="receiverUserName != null">receiver_user_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="receiverUserId != null">#{receiverUserId},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="receiverName != null">#{receiverName},</if>
+            <if test="receiverPhone != null">#{receiverPhone},</if>
+            <if test="receiverAddress != null">#{receiverAddress},</if>
+            <if test="money != null">#{money},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="evaluate != null">#{evaluate},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="receiverUserPhone != null">#{receiverUserPhone},</if>
+            <if test="receiverUserName != null">#{receiverUserName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTbDemandOrder" parameterType="TbDemandOrder">
+        update tb_demand_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="receiverUserId != null">receiver_user_id = #{receiverUserId},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="receiverName != null">receiver_name = #{receiverName},</if>
+            <if test="receiverPhone != null">receiver_phone = #{receiverPhone},</if>
+            <if test="receiverAddress != null">receiver_address = #{receiverAddress},</if>
+            <if test="money != null">money = #{money},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="evaluate != null">evaluate = #{evaluate},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="receiverUserPhone != null">receiver_user_phone = #{receiverUserPhone},</if>
+            <if test="receiverUserName != null">receiver_user_name = #{receiverUserName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbDemandOrderById" parameterType="String">
+        delete from tb_demand_order where id = #{id}
+    </delete>
+
+    <delete id="deleteTbDemandOrderByIds" parameterType="String">
+        delete from tb_demand_order where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.emoticon.tb.mapper.TbWelfareMapper">
+
+    <resultMap type="TbWelfare" id="TbWelfareResult">
+        <result property="id"    column="id"    />
+        <result property="welfareImage"    column="welfare_image"    />
+        <result property="jumpType"    column="jump_type"    />
+        <result property="jumpUrl"    column="jump_url"    />
+        <result property="appId"    column="app_id"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="status"    column="status"    />
+        <result property="buttonText"    column="button_text"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTbWelfareVo">
+        select id, welfare_image, jump_type, jump_url, app_id, sort_order, status, button_text, remark, create_time, update_time from tb_welfare
+    </sql>
+
+    <select id="selectTbWelfareList" parameterType="TbWelfare" resultMap="TbWelfareResult">
+        <include refid="selectTbWelfareVo"/>
+        <where>
+            <if test="welfareImage != null  and welfareImage != ''"> and welfare_image = #{welfareImage}</if>
+            <if test="jumpType != null  and jumpType != ''"> and jump_type = #{jumpType}</if>
+            <if test="jumpUrl != null  and jumpUrl != ''"> and jump_url = #{jumpUrl}</if>
+            <if test="appId != null  and appId != ''"> and app_id = #{appId}</if>
+            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="buttonText != null  and buttonText != ''"> and button_text = #{buttonText}</if>
+        </where>
+    </select>
+
+    <select id="selectTbWelfareById" parameterType="Long" resultMap="TbWelfareResult">
+        <include refid="selectTbWelfareVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTbWelfare" parameterType="TbWelfare" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_welfare
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="welfareImage != null and welfareImage != ''">welfare_image,</if>
+            <if test="jumpType != null and jumpType != ''">jump_type,</if>
+            <if test="jumpUrl != null">jump_url,</if>
+            <if test="appId != null">app_id,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="status != null">status,</if>
+            <if test="buttonText != null">button_text,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="welfareImage != null and welfareImage != ''">#{welfareImage},</if>
+            <if test="jumpType != null and jumpType != ''">#{jumpType},</if>
+            <if test="jumpUrl != null">#{jumpUrl},</if>
+            <if test="appId != null">#{appId},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="status != null">#{status},</if>
+            <if test="buttonText != null">#{buttonText},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbWelfare" parameterType="TbWelfare">
+        update tb_welfare
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="welfareImage != null and welfareImage != ''">welfare_image = #{welfareImage},</if>
+            <if test="jumpType != null and jumpType != ''">jump_type = #{jumpType},</if>
+            <if test="jumpUrl != null">jump_url = #{jumpUrl},</if>
+            <if test="appId != null">app_id = #{appId},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="buttonText != null">button_text = #{buttonText},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbWelfareById" parameterType="Long">
+        delete from tb_welfare where id = #{id}
+    </delete>
+
+    <delete id="deleteTbWelfareByIds" parameterType="String">
+        delete from tb_welfare where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
